@@ -17,11 +17,11 @@ def encrypt_vigenere(plaintext: str, keyword: str) -> str:
         keyword += keyword
     for i in range(0, len(plaintext)):
         if plaintext[i] in alfavit:
-            shift = ord(keyword[i].lower()) - ord('a')
+            shift = ord(keyword[i].lower()) - ord("a")
             if plaintext[i].lower() == plaintext[i]:
-                start = ord('a')
+                start = ord("a")
             else:
-                start = ord('A')
+                start = ord("A")
             ciphertext += chr(start + (ord(plaintext[i]) + shift - start) % num_letters)
         else:
             ciphertext += plaintext[i]
@@ -46,11 +46,11 @@ def decrypt_vigenere(ciphertext: str, keyword: str) -> str:
         keyword += keyword
     for i in range(0, len(ciphertext)):
         if ciphertext[i] in alfavit:
-            shift = ord(keyword[i].lower()) - ord('a')
+            shift = ord(keyword[i].lower()) - ord("a")
             if ciphertext[i].lower() == ciphertext[i]:
-                start = ord('a')
+                start = ord("a")
             else:
-                start = ord('A')
+                start = ord("A")
             plaintext += chr(start + (ord(ciphertext[i]) - shift - start) % num_letters)
         else:
             plaintext += ciphertext[i]
