@@ -44,9 +44,9 @@ def decrypt_caesar(ciphertext: str, shift: int = 3) -> str:
     for i in ciphertext:
         if i in alfavit:
             if i.lower() == i:
-                start = ord('a')
+                start = ord("a")
             else:
-                start = ord('A')
+                start = ord("A")
             plaintext += chr(start + (ord(i) - shift - start) % num_letters)
         else:
             plaintext += i
