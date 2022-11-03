@@ -15,7 +15,7 @@ class GameOfLife:
         self,
         size: tp.Tuple[int, int],
         randomize: bool = True,
-        max_generations: tp.Optional[float] = float("inf"),
+        max_generations: int = 10**9,
     ) -> None:
         # Размер клеточного поля
         self.rows, self.cols = size
@@ -29,6 +29,7 @@ class GameOfLife:
         self.generations = 1
 
     def create_grid(self, randomize: bool = False) -> Grid:
+        # Copy from previous assignment
         matrix: Grid
         matrix = [[0] * self.cols for i in range(self.rows)]
         if randomize:
@@ -38,6 +39,7 @@ class GameOfLife:
         return matrix
 
     def get_neighbours(self, cell: Cell) -> Cells:
+        # Copy from previous assignment
         (x, y) = cell
         neighbours: Cells
         neighbours = []
@@ -50,62 +52,69 @@ class GameOfLife:
         return neighbours
 
     def get_next_generation(self) -> Grid:
-        out: Grid = []
-        for i in range(0, self.rows):
-            out.append([])
-            for j in range(0, self.cols):
-                out[i].append(0)
-        for i in range(len(self.curr_generation)):
-            for j in range(len(self.curr_generation[0])):
-                cell: Cell = (i, j)
-                sum = self.get_neighbours(cell).count(1)
-                if self.curr_generation[i][j] and sum == 2 or sum == 3:
-                    out[i][j] = 1
-        return out
+        # Copy from previous assignment
+        matrix: Grid
+        matrix = self.create_grid()
+        self.prev_generation = self.curr_generation
+        for i in range(self.rows):
+            for j in range(self.cols):
+                neighbours = self.get_neighbours((i, j))
+                if self.curr_generation[i][j] == 1 and 2 <= neighbours.count(1) <= 3:
+                    matrix[i][j] = 1
+                elif self.curr_generation[i][j] == 0 and neighbours.count(1) == 3:
+                    matrix[i][j] = 1
+
+        self.curr_generation = matrix
+        return matrix
 
     def step(self) -> None:
+        """
+        Выполнить один шаг игры.
+        """
         if not self.is_max_generations_exceeded:
             self.get_next_generation()
             self.generations += 1
 
+    @property
+    def is_max_generations_exceeded(self) -> bool:
+        """
+        Не превысило ли текущее число поколений максимально допустимое.
+        """
+        if self.generations >= self.max_generations:
+            return True
+        else:
+            return False
 
     @property
     def is_changing(self) -> bool:
         """
         Изменилось ли состояние клеток с предыдущего шага.
         """
-        if self.prev_generation == self.curr_generation:
-            return False
-        else:
+        if self.prev_generation != self.curr_generation:
             return True
-
+        else:
+            return False
 
     @staticmethod
     def from_file(filename: pathlib.Path) -> "GameOfLife":
         """
         Прочитать состояние клеток из указанного файла.
         """
-        file = open(filename)
-        whole = file.readlines()
-        grid = []
-        for i in range(len(whole)):
-            if whole[i] != "\n":
-                whole[i] = whole[i][:-1]
-                row = [int(n) for n in list(whole[i])]
-                grid.append(row)
-        game = GameOfLife((len(grid), len(grid[0])))
-        game.curr_generation = grid
-        file.close()
-        return game
+        matrix: Grid
+        f = open(filename, "r")
+        matrix = [[int(elem) for elem in row if elem != "\n"] for row in f.readlines()]
+        game = GameOfLife((len(matrix), len(matrix[0])), False)
+        game.curr_generation = matrix
 
+        return game
 
     def save(self, filename: pathlib.Path) -> None:
         """
         Сохранить текущее состояние клеток в указанный файл.
         """
-        file = open(filename, "w")
-        for i in range(len(self.curr_generation)):
-            for j in range(len(self.curr_generation[0])):
-                file.write(str(self.curr_generation[i][j]))
-            file.write("\n")
-        file.close()
+        f = open(filename, "w")
+        for i in range(self.rows):
+            row = ""
+            for j in range(self.cols):
+                row += str(self.curr_generation[i][j])
+            f.write(row + "\n")
