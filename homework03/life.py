@@ -73,21 +73,22 @@ class GameOfLife:
         """
         Выполнить один шаг игры.
         """
-        new_gen = self.get_next_generation()
-        self.generations += 1
+        if not self.is_max_generations_exceeded and self.is_changing:
+            self.prev_generation = self.curr_generation
+            self.curr_generation = self.get_next_generation()
+            self.generations += 1
 
-        self.prev_generation = self.curr_generation
-        self.curr_generation = new_gen
-        
     @property
     def is_max_generations_exceeded(self) -> bool:
         """
         Не превысило ли текущее число поколений максимально допустимое.
         """
+        if self.max_generations is None:
+            self.max_generations = 1
         if self.generations >= self.max_generations:
             return True
         else:
-            return False
+            return Falsee
 
     @property
     def is_changing(self) -> bool:
