@@ -79,7 +79,6 @@ class GameOfLife:
         self.prev_generation = self.curr_generation
         self.curr_generation = new_gen
       
-
     @property
     def is_max_generations_exceeded(self) -> bool:
         """
