@@ -40,16 +40,18 @@ class GameOfLife:
 
     def get_neighbours(self, cell: Cell) -> Cells:
         # Copy from previous assignment
-        (x, y) = cell
-        neighbours: Cells
-        neighbours = []
-        steps = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
-        for (step_x, step_y) in steps:
-            cur_x = x + step_x
-            cur_y = y + step_y
-            if 0 <= cur_x < self.rows and 0 <= cur_y < self.cols:
-                neighbours += [self.curr_generation[cur_x][cur_y]]
-        return neighbours
+        out: Grid = []
+        for i in range(0, self.rows):
+            out.append([])
+            for j in range(0, self.cols):
+                out[i].append(0)
+        for i in range(len(self.curr_generation)):
+            for j in range(len(self.curr_generation[0])):
+                cell: Cell = (i, j)
+                sum = self.get_neighbours(cell).count(1)
+                if self.curr_generation[i][j] and sum == 2 or sum == 3:
+                    out[i][j] = 1
+        return out
 
     def get_next_generation(self) -> Grid:
         # Copy from previous assignment
@@ -71,9 +73,12 @@ class GameOfLife:
         """
         Выполнить один шаг игры.
         """
-        if not self.is_max_generations_exceeded:
-            self.get_next_generation()
-            self.generations += 1
+        new_gen = self.get_next_generation()
+        self.generations += 1
+
+        self.prev_generation = self.curr_generation
+        self.curr_generation = new_gen
+      
 
     @property
     def is_max_generations_exceeded(self) -> bool:
@@ -100,13 +105,18 @@ class GameOfLife:
         """
         Прочитать состояние клеток из указанного файла.
         """
-        matrix: Grid
-        f = open(filename, "r")
-        matrix = [[int(elem) for elem in row if elem != "\n"] for row in f.readlines()]
-        game = GameOfLife((len(matrix), len(matrix[0])), False)
-        game.curr_generation = matrix
+        with open(filename) as f:
+            grid = f.readlines()
+            height = len(grid)
+            width = len(grid[0].strip())
 
-        return game
+            grid1 = []
+            for i in range(len(grid)):
+                grid1.append(list(map(int, [*(grid[i].strip())])))
+
+        life = GameOfLife((height, width))
+        life.curr_generation = grid1
+        return life
 
     def save(self, filename: pathlib.Path) -> None:
         """
