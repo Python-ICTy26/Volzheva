@@ -94,28 +94,15 @@ class GameOfLife:
         """
         for i in range(self.cell_height):
             for j in range(self.cell_width):
-                if self.grid[i][j]:
-                    pygame.draw.rect(
-                        self.screen,
-                        pygame.Color("green"),
-                        (
-                            j * self.cell_size + 1,
-                            i * self.cell_size + 1,
-                            self.cell_size - 1,
-                            self.cell_size - 1,
-                        ),
-                    )
+                if self.grid[i][j] == 1:
+                    color = "green"
                 else:
-                    pygame.draw.rect(
-                        self.screen,
-                        pygame.Color("white"),
-                        (
-                            j * self.cell_size + 1,
-                            i * self.cell_size + 1,
-                            self.cell_size - 1,
-                            self.cell_size - 1,
-                        ),
-                    )
+                    color = "white"
+                pygame.draw.rect(
+                    self.screen,
+                    pygame.Color(color),
+                    (j * self.cell_size, i * self.cell_size, self.cell_size, self.cell_size),
+                )
 
     def get_neighbours(self, cell: Cell) -> Cells:
         """
