@@ -40,18 +40,16 @@ class GameOfLife:
 
     def get_neighbours(self, cell: Cell) -> Cells:
         # Copy from previous assignment
-        out: Grid = []
-        for i in range(0, self.rows):
-            out.append([])
-            for j in range(0, self.cols):
-                out[i].append(0)
-        for i in range(len(self.curr_generation)):
-            for j in range(len(self.curr_generation[0])):
-                cell: Cell = (i, j)
-                sum = self.get_neighbours(cell).count(1)
-                if self.curr_generation[i][j] and sum == 2 or sum == 3:
-                    out[i][j] = 1
-        return out
+        (x, y) = cell
+        neighbours: Cells
+        neighbours = []
+        steps = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+        for (step_x, step_y) in steps:
+            cur_x = x + step_x
+            cur_y = y + step_y
+            if 0 <= cur_x < self.rows and 0 <= cur_y < self.cols:
+                neighbours += [self.curr_generation[cur_x][cur_y]]
+        return neighbours
 
     def get_next_generation(self) -> Grid:
         # Copy from previous assignment
