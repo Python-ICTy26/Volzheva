@@ -20,7 +20,7 @@ class GUI(UI):
         self.screen = pygame.display.set_mode(self.screen_size)
 
     def write_debug(self, message):
-        with open('c:\\temp\\life-debug.log', 'a') as f:
+        with open("c:\\temp\\life-debug.log", "a") as f:
             print(message, file=f)
 
     def draw_lines(self) -> None:
