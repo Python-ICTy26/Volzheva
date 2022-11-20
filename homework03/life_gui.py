@@ -105,4 +105,3 @@ class GUI(UI):
 
 
 GUI(GameOfLife((20, 20))).run()
-
