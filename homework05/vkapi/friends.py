@@ -28,8 +28,21 @@ def get_friends(
     :param fields: Список полей, которые нужно получить для каждого пользователя.
     :return: Список идентификаторов друзей пользователя или список пользователей.
     """
-    pass
+    resp = session.get(
+        "friends.get",
+        user_id=user_id,
+        count=count,
+        offset=offset,
+        fields=fields,
+        access_token=config.VK_CONFIG["access_token"],
+        v=config.VK_CONFIG["version"],
+    )
 
+    print(resp)
+    print(resp.json())
+    json = resp.json()["response"]
+    return FriendsResponse(json["count"], json["items"])
+# get_friends(13589213)
 
 class MutualFriends(tp.TypedDict):
     id: int
@@ -39,7 +52,6 @@ class MutualFriends(tp.TypedDict):
 
 def get_mutual(
     source_uid: tp.Optional[int] = None,
-    target_uid: tp.Optional[int] = None,
     target_uids: tp.Optional[tp.List[int]] = None,
     order: str = "",
     count: tp.Optional[int] = None,
@@ -47,14 +59,39 @@ def get_mutual(
     progress=None,
 ) -> tp.Union[tp.List[int], tp.List[MutualFriends]]:
     """
-    Получить список идентификаторов общих друзей между парой пользователей.
+        Получить список идентификаторов общих друзей между парой пользователей.
 
-    :param source_uid: Идентификатор пользователя, чьи друзья пересекаются с друзьями пользователя с идентификатором target_uid.
-    :param target_uid: Идентификатор пользователя, с которым необходимо искать общих друзей.
-    :param target_uids: Cписок идентификаторов пользователей, с которыми необходимо искать общих друзей.
-    :param order: Порядок, в котором нужно вернуть список общих друзей.
-    :param count: Количество общих друзей, которое нужно вернуть.
-    :param offset: Смещение, необходимое для выборки определенного подмножества общих друзей.
-    :param progress: Callback для отображения прогресса.
-    """
-    pass
+        :param source_uid: Идентификатор пользователя, чьи друзья пересекаются с друзьями пользователя с идентификатором target_uid.
+        :param target_uid: Идентификатор пользователя, с которым необходимо искать общих друзей.
+        :param target_uids: Cписок идентификаторов пользователей, с которыми необходимо искать общих друзей.
+        :param order: Порядок, в котором нужно вернуть список общих друзей.
+        :param count: Количество общих друзей, которое нужно вернуть.
+        :param offset: Смещение, необходимое для выборки определенного подмножества общих друзей.
+        :param progress: Callback для отображения прогресса.
+        """
+    result = []
+    for each in target_uids:
+        resp = session.get(
+            "friends.getMutual",
+            source_uid=source_uid,
+            target_uid=each,
+            count=count,
+            offset=offset,
+            access_token=config.VK_CONFIG["access_token"],
+            v=config.VK_CONFIG["version"],
+        )
+        print(resp.json())
+        if "error" in resp.json():
+            break
+        res = resp.json()["response"]
+        dict = {"common_count": len(res), "common_friends": res, "id": each}
+        result.append(dict)
+    return result
+
+
+a = get_mutual(13589213, [4603134])
+print(get_mutual(13589213, [2521999]))
+# print(get_mutual(13589213, [4603134, 2521999]))
+
+
+#[13589213, 1117853, 1554238, 2521999, 3289334, 9616216, 197718955, 4603134]
