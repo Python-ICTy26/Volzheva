@@ -55,9 +55,13 @@ def extract_news(page):
     return news_list
 
 
-def extract_next_page(parser):
+def extract_next_page(page):
     """ Extract next page URL """
-    # PUT YOUR CODE HERE
+    try:
+        ref = page.table.findAll('table')[1].findAll('td', class_= 'title')[-1].find('a', href=True)['href']
+        return ref
+    except Exception:
+        return ""
 
 
 def get_news(url, n_pages=1):
@@ -74,4 +78,4 @@ def get_news(url, n_pages=1):
         n_pages -= 1
     return news
 
-print(get_news("https://news.ycombinator.com/"))
+print(get_news("https://news.ycombinator.com/", 3))
