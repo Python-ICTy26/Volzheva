@@ -2,11 +2,55 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def extract_news(parser):
+def extract_news(page):
     """ Extract news from a given web page """
+    def get_int(string: str, default: int = 0):
+        try:
+            return int(string)
+
+        except ValueError:
+            return default
+
     news_list = []
 
-    # PUT YOUR CODE HERE
+    table_news = page.table.findAll('table')[1]
+    tr_article = table_news.find('tr', class_='athing')
+
+    while tr_article is not None:
+        tr_props = tr_article.find_next_sibling('tr')
+        if tr_props is None:
+            break
+
+        # Here:
+        #   tr_article - info about article
+        #   tr_props - article's properties
+        # print('article: \n' + str(tr_article))
+        # print('props: \n' + str(tr_props))
+
+        try:
+            article_title = tr_article.find('span', class_='titleline').find('a').text
+            article_author = tr_props.find('a', class_='hnuser').text
+            article_likes = get_int(tr_props.find('span', class_='score').text.split(" ")[0])
+            article_comments = get_int(tr_props.findAll('a')[-1].text.replace(u'\xa0', u' ').split(" ")[0])
+            article_url = tr_article.findAll('a', href=True)[1]['href']
+
+            news_list.append({
+                'author': article_author,
+                'comments': article_comments,
+                'points': article_likes,
+                'title': article_title,
+                'url': article_url
+            })
+
+        except Exception as e:
+            # print(e)
+            pass
+
+        # print('----------------------------')
+        tr_article = tr_props.find_next_sibling('tr', class_='athing')
+
+    # for item in news_list:
+    #     print(item)
 
     return news_list
 
@@ -30,3 +74,4 @@ def get_news(url, n_pages=1):
         n_pages -= 1
     return news
 
+print(get_news("https://news.ycombinator.com/"))
