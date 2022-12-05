@@ -19,4 +19,9 @@ class News(Base):
     points = Column(Integer)
     label = Column(String)
 
-Base.metadata.create_all(bind=engine)
+
+def clear_db():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+
+
