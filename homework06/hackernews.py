@@ -45,7 +45,7 @@ def add_label():
         filter(News.id == int(args['id'][0])). \
         update({'label': str(args['label'][0])})
     s.commit()
-    redirect("/classify")
+    redirect("/recommendations")
 
 
 @route("/update")
