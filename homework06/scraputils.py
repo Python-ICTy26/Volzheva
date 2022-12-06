@@ -78,4 +78,4 @@ def get_news(url, n_pages=1):
         n_pages -= 1
     return news
 
-print(get_news("https://news.ycombinator.com/", 3))
+
