@@ -7,6 +7,7 @@
     </head>
     <body>
         <div class="ui container" style="padding-top: 10px;">
+        <h3>News</h3>
         <table class="ui celled table">
             <thead>
                 <th>Title</th>
@@ -29,6 +30,11 @@
                 %end
             </tbody>
             <tfoot class="full-width">
+                <tr>
+                    <th colspan="7">
+                        <a href="/recommendations" class="ui right floated small primary button">Recommendations</a>
+                    </th>
+                </tr>
                 <tr>
                     <th colspan="7">
                         <a href="/update" class="ui right floated small primary button">I Wanna more Hacker News!</a>
