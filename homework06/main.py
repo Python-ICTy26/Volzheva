@@ -1,8 +1,11 @@
 import scraputils
 import db
+import hackernews
+
+
 #
 #
-COLLECTION_SIZE = 150
+COLLECTION_SIZE = 1500
 
 
 #
@@ -20,12 +23,22 @@ def load_news():
                        comments=str(each['comments']),
                        points=str(each['points']))
         s.add(each)
-        s.commit()
+
+    s.commit()
 
 
+#
+#
+def run_web():
+    hackernews.web_server()
 
+
+#
+#
 def main():
-    load_news()
+    # load_news()
+    # run_web()
+    pass
 
 
 if __name__ == "__main__":
