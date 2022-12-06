@@ -36,7 +36,23 @@ def add_label():
 
 @route("/update")
 def update_news():
-    # PUT YOUR CODE HERE
+    # 1. Получить данные с новостного сайта
+    # 2. Проверить, каких новостей еще нет в БД. Будем считать,
+    #    что каждая новость может быть уникально идентифицирована
+    #    по совокупности двух значений: заголовка и автора
+    # 3. Сохранить в БД те новости, которых там нет
+    s = session()
+    for news in get_news("https://news.ycombinator.com/", 1):
+        rows = s.query(News).filter(News.title == news['title']).filter(News.author == news['author']).all()
+        if len(rows) == 0:
+            each = News(title=str(news['title']),
+                        author=str(news['author']),
+                        url=str(news['url']),
+                        comments=str(news['comments']),
+                        points=str(news['points']))
+            s.add(each)
+            s.commit()
+
     redirect("/news")
 
 
