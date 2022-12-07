@@ -1,6 +1,5 @@
 import typing as tp
 from collections import defaultdict
-
 import community as community_louvain
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -18,7 +17,24 @@ def ego_network(
     :param user_id: Идентификатор пользователя, для которого строится граф друзей.
     :param friends: Идентификаторы друзей, между которыми устанавливаются связи.
     """
-    pass
+
+    result = []
+    mutual = get_mutual(user_id, friends)
+    print(mutual)
+    for each in mutual:
+        if len(each) > 1 :
+            for friend in each['common_friends']:
+                if friend in friends and each['id'] in friends:
+                    result.append([each['id'], friend])
+
+    return result
+
+
+print(ego_network(13589213, [13589213, 1117853, 1554238, 2521999, 3289334, 9616216, 197718955, 4603134]))
+
+
+
+
 
 
 def plot_ego_network(net: tp.List[tp.Tuple[int, int]]) -> None:
@@ -66,3 +82,6 @@ def describe_communities(
                     data.append([cluster_n] + [friend.get(field) for field in fields])  # type: ignore
                     break
     return pd.DataFrame(data=data, columns=["cluster"] + fields)
+
+
+print(ego_network(322122))

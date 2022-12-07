@@ -22,10 +22,39 @@ class Session:
         max_retries: int = 3,
         backoff_factor: float = 0.3,
     ) -> None:
-        pass
+        self.base_url = base_url
+        self.timeout = timeout
+        self.max_retries = max_retries
+        self.backoff_factor = backoff_factor
+        self.session = requests.Session()
 
-    def get(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
-        pass
+    # def get(self, method: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
+    #     query = "{base_url}/{method}?access_token={access_token}&user_id={user_id}&fields={fields}&v={v}".format(
+    #         base_url=self.base_url, method=method, **kwargs
+    #     )
+    #     return requests.get(query)
+    # def get(self, method: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
+    #     query = "{base_url}/{method}?access_token={access_token}&user_id={user_id}&fields={fields}&v={v}".format(
+    #         base_url=self.base_url, method=method, **kwargs
+    #     )
+    #     return requests.get(query)
+
+    def get(self, method: str, **kwargs: tp.Any) -> requests.Response:
+        resp = self.session.get(f"{self.base_url}/{method}", params=kwargs)
+        return resp
+
+
+    # resp = self.session.get(f"{self.base_url}{url}", params=kwargs)
+    # resp.encoding = "utf-8"
+    # return resp
+
 
     def post(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
-        pass
+        response = self.session.post(f"{self.base_url}/{url}", data=kwargs, timeout=self.timeout)
+        return response
+
+    # def post(self, url: str, *args: tp.Any, **kwargs: tp.Any) -> requests.Response:
+    #     url = f"{self.base_url}/{url}"
+    #     response = self.http.post(url=url, data=kwargs, timeout=self.timeout)
+    #     return response
+
